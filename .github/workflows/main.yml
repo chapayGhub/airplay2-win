@@ -27,7 +27,10 @@ jobs:
       run: |
            cd "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\"
            .\MSBuild.exe -target:airplay-dll-demo $Env:GITHUB_WORKSPACE\airplay2-win
-           .\MSBuild.exe $Env:GITHUB_WORKSPACE\airplay2-win
+           .\MSBuild.exe $Env:GITHUB_WORKSPACE\airplay2-win  /p:PublishProfile=win-x64 /p:Configuration=Release /p:OutDir=bin/win-x64
+    - name: zip build
+      run: 7z a -tzip -mx=9 $Env:GITHUB_WORKSPACE\airplay2.zip $Env:GITHUB_WORKSPACE\bin $Env:GITHUB_WORKSPACE\build
+
     - name: Create Release
       id: create_release
       uses: actions/create-release@latest
@@ -42,3 +45,10 @@ jobs:
           - Second Change
         draft: false
         prerelease: false
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        # Artifact name
+        name: "airplay2.zip"
+        # Directory containing files to upload
+        path: $Env:GITHUB_WORKSPACE\airplay2.zip
